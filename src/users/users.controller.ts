@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query,
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { debug } from 'console';
 
 @Controller('users')
 export class UsersController {
@@ -15,12 +16,12 @@ export class UsersController {
 
     @Post()
     addUser(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-            return this.userService.addUser(createUserDto);
+        return this.userService.addUser(createUserDto);
     }
 
     @Get(':id')
     findUser(@Param('id', ParseIntPipe) id: number) {
-        return this.userService.findUser(id);
+        return this.userService.findUserById(id);
     }
 
     @Patch(':id')

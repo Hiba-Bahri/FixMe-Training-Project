@@ -1,72 +1,81 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Not, Repository } from 'typeorm';
+import { User } from './entities/User';
+import { debug } from 'console';
 
 @Injectable()
 export class UsersService {
 
-    users = [
-        {id: 1, name: 'John', email: 'jhon@gmail.com'}, 
-        {id: 2, name: 'Doe', email: 'doe@gmail.com'},
-    ];
+    constructor(
+        @InjectRepository(User)
+        private userRepository: Repository<User>,
+    ) {}
 
-    getUsers() {
-        return this.users;
+    async getUsers():Promise<User[]> {
+        return await this.userRepository.find();
     }
 
-    addUser(createUserDto: CreateUserDto) {
+    async addUser(createUserDto: CreateUserDto): Promise<User> {
 
         if (!createUserDto.name || !createUserDto.email) {
             throw new BadRequestException('Fill all the fields');
         }
 
-        const userExists = this.users.some(user => user.email === createUserDto.email);
+        const userExists = await this.userRepository.findOneBy({ email: createUserDto.email });
 
         if (userExists) {
             throw new ConflictException('A user with this email already exists');
         }
 
-        const orderedList = [...this.users].sort((a, b) => +b.id - +a.id);
-        let id = orderedList[0].id+1;
-        const newUser = {id, ...createUserDto};
-        this.users.push(newUser);
-        return 'User is added';
+        const createdUser = this.userRepository.create(createUserDto);
+
+        return await this.userRepository.save(createdUser);
     }
 
-    findUser(id: number) {
-        const user = this.users.find(user => user.id === id);
+    async findUserById(id: number): Promise<User> | null {
+        const user = await this.userRepository.findOneBy({ id });
         if (!user) {
             throw new NotFoundException('User not found');
         }
         return user;
     }
 
-    updateUser(id: number, updateUserDto: UpdateUserDto) {
+    async findUserByEmail(email: string): Promise<User> | null {
+        const user =  await this.userRepository.findOneBy({ email });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        return user;
+    }
 
-        this.findUser(id);
+    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+
+        await this.findUserById(id);
 
 
         if (updateUserDto.email) {    
-            const emailExists = this.users.some(user => user.email === updateUserDto.email && user.id !== id);
-        
+            const emailExists = await this.userRepository.findOne({
+                where: { email: updateUserDto.email, id: Not(id) },
+            });     
+
             if (emailExists) {
                 throw new ConflictException('A user with this email already exists');
             }
         }
 
-        this.users = this.users.map(user => 
-            user.id === id ? {...user, ...updateUserDto} : user
-        );
+        await this.userRepository.update(id, updateUserDto);
 
-        return this.findUser(id);
+        return this.findUserById(id);
     }
 
-    deleteUser(id: number) {
+    async deleteUser(id: number): Promise<void>{
 
-        this.findUser(id);
+        await this.findUserById(id);
 
-        this.users = this.users.filter(user => user.id !== id);
-        return 'User deleted';
+        await this.userRepository.delete(id);
     }
 
 }
