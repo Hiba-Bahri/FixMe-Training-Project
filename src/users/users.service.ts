@@ -71,11 +71,13 @@ export class UsersService {
         return this.findUserById(id);
     }
 
-    async deleteUser(id: number): Promise<void>{
+    async deleteUser(id: number): Promise<string>{
 
         await this.findUserById(id);
 
         await this.userRepository.delete(id);
+
+        return "User deleted successfully";
     }
 
 }

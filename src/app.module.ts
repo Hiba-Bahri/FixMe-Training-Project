@@ -4,7 +4,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/User';
+import { TodoModule } from './todo/todo.module';
 import * as dotenv from 'dotenv';
+import { Todo } from './todo/entities/Todo';
 
 dotenv.config();
 
@@ -18,9 +20,11 @@ dotenv.config();
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User], 
-      //synchronize: true,
+      entities: [User, Todo], 
+      //autoLoadEntities: true,
+      //synchronize: true
     }),
+    TodoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
