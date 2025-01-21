@@ -20,10 +20,6 @@ export class UsersService {
 
     async addUser(createUserDto: CreateUserDto): Promise<User> {
 
-        if (!createUserDto.name || !createUserDto.email) {
-            throw new BadRequestException('Fill all the fields');
-        }
-
         const userExists = await this.userRepository.findOneBy({ email: createUserDto.email });
 
         if (userExists) {
@@ -51,7 +47,7 @@ export class UsersService {
         return user;
     }
 
-    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<String> {
 
         await this.findUserById(id);
 
@@ -68,7 +64,7 @@ export class UsersService {
 
         await this.userRepository.update(id, updateUserDto);
 
-        return this.findUserById(id);
+        return "User updated successfully";
     }
 
     async deleteUser(id: number): Promise<string>{
