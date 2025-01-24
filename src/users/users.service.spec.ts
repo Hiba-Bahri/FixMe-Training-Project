@@ -40,6 +40,35 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('getUsers', () => {
+    it('should return an empty array', async () => {
+      mockUserRepository.find.mockResolvedValue([]);
+
+      expect(await service.getUsers()).toEqual([]);
+      expect(mockUserRepository.find).toHaveBeenCalledTimes(1);
+
+    });
+
+    it('should return all users', async () => {
+      const users = [
+        {
+          id: 1,
+          name: 'Hiba Bahri',
+          email: 'hibabahri@gmail.com'
+        },
+        {
+          id: 2,
+          name: 'Yassine Elkefi',
+          email: 'yassineelkefi@gmail.com',
+        }
+      ];
+      mockUserRepository.find.mockResolvedValue(users);
+
+      expect(await service.getUsers()).toEqual(users);
+      expect(mockUserRepository.find).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('addUser', () => {
 
     it('should throw ConflictException if a user with the email already exists', async () => {
