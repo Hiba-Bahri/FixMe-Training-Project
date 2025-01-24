@@ -1,9 +1,8 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Todo } from './entities/Todo';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo-dto';
-import { UpdateTodoDto } from './dto/update-todo-dto';
 
 @Injectable()
 export class TodoService {
@@ -19,16 +18,12 @@ export class TodoService {
     
     async addTodo(createTodoDto: CreateTodoDto): Promise<Todo> {
     
-        if (!createTodoDto.description) {
-            throw new BadRequestException('Fill all the fields');
-        }
-    
         const createdTodo = this.todoRepository.create(createTodoDto);
     
         return await this.todoRepository.save(createdTodo);
     }
     
-    async findTodoById(id: number): Promise<Todo> | null {
+    async findTodoById(id: number): Promise<Todo>{
         const Todo = await this.todoRepository.findOneBy({ id });
         if (!Todo) {
             throw new NotFoundException('Todo not found');
@@ -37,7 +32,7 @@ export class TodoService {
         return Todo;
     }
     
-    async checkTodo(id: number): Promise<Todo> {
+    async checkTodo(id: number): Promise<string> {
     
         const checkedTodo = await this.findTodoById(id);
 
@@ -45,7 +40,7 @@ export class TodoService {
     
         await this.todoRepository.update(id, checkedTodo);
     
-        return this.findTodoById(id);
+        return "Todo task updated successfully";
     }
     
     async deleteTodo(id: number): Promise<string>{
