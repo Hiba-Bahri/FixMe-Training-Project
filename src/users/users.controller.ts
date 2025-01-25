@@ -20,8 +20,13 @@ export class UsersController {
     }
 
     @Get(':id')
-    findUser(@Param('id', ParseIntPipe) id: number) {
+    findUserById(@Param('id', ParseIntPipe) id: number) {
         return this.userService.findUserById(id);
+    }
+
+    @Get(':email')
+    findUserByEmail(@Param('email') email: string) {
+        return this.userService.findUserByEmail(email);
     }
 
     @Patch(':id')
