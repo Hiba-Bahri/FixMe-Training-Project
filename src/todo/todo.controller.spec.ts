@@ -97,7 +97,7 @@ describe('TodoController', () => {
     });
 
       it('should throw an exception when TodoService.addTodo fails', async () => {
-        const createTodoDto = {
+        const createTodoDto: CreateTodoDto = {
           description: "Learn NestJS",
           user: 1
         };
@@ -109,7 +109,7 @@ describe('TodoController', () => {
       });    
 
     it('should call TodoService.addTodo with the correct body param and return the created todo', async () => {
-      const createTodoDto = {
+      const createTodoDto : CreateTodoDto = {
         description: "Learn NestJS",
         user: 1
       };
