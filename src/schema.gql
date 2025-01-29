@@ -27,11 +27,16 @@ type Query {
   userById(id: Int!): UserType!
   userByEmail(email: String!): UserType!
   deleteUser(id: Int!): String!
+  todos(user: Int!): [TodoType!]!
+  todoById(id: Int!): TodoType!
+  deleteTodo(id: Int!): String!
 }
 
 type Mutation {
   createUser(data: CreateUserDto!): UserType!
   updateUser(id: Int!, data: UpdateUserDto!): String!
+  createTodo(data: CreateTodoDto!): TodoType!
+  updateTodo(id: Int!): String!
 }
 
 input CreateUserDto {
@@ -42,4 +47,9 @@ input CreateUserDto {
 input UpdateUserDto {
   name: String
   email: String
+}
+
+input CreateTodoDto {
+  description: String!
+  user: Float!
 }
