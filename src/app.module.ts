@@ -7,11 +7,18 @@ import { User } from './users/entities/User';
 import { TodoModule } from './todo/todo.module';
 import * as dotenv from 'dotenv';
 import { Todo } from './todo/entities/Todo';
+import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
 
 dotenv.config();
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
     UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',

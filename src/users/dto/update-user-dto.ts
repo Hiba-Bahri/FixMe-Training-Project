@@ -1,4 +1,6 @@
+import { InputType, Int, PartialType } from "@nestjs/graphql";
 import { CreateUserDto } from "./create-user-dto";
-import { PartialType } from "@nestjs/mapped-types";
 
+@InputType()
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
+
