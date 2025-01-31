@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodoController } from './todo.controller';
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo.input.ts';
+import { CreateTodoInput } from './dto/create-todo.input';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 
 describe('TodoController', () => {
@@ -68,63 +68,63 @@ describe('TodoController', () => {
 
   describe('addTodo', () => {
 
-    it('should throw a BadRequestException for invalid CreateTodoDto', async () => {
-      const invalidCreateTodoDto = {};
+    it('should throw a BadRequestException for invalid CreateTodoInput', async () => {
+      const invalidCreateTodoInput = {};
       const validationPipe = new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true });
 
       await expect(
-        validationPipe.transform(invalidCreateTodoDto, {
+        validationPipe.transform(invalidCreateTodoInput, {
           type: 'body',
-          metatype: CreateTodoDto,
+          metatype: CreateTodoInput,
         }),
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should pass validation for valid CreateTodoDto', async () => {
-      const validCreateTodoDto = {         
+    it('should pass validation for valid CreateTodoInput', async () => {
+      const validCreateTodoInput = {         
         description: "Learn NestJS",
         user: 1
       };
 
       const validationPipe = new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true });
 
-      const result = await validationPipe.transform(validCreateTodoDto, {
+      const result = await validationPipe.transform(validCreateTodoInput, {
         type: 'body',
-        metatype: CreateTodoDto,
+        metatype: CreateTodoInput,
       });
 
-      expect(result).toEqual(validCreateTodoDto);
+      expect(result).toEqual(validCreateTodoInput);
     });
 
       it('should throw an exception when TodoService.addTodo fails', async () => {
-        const createTodoDto: CreateTodoDto = {
+        const createTodoInput: CreateTodoInput = {
           description: "Learn NestJS",
           user: 1
         };
 
         jest.spyOn(todoService, 'addTodo').mockRejectedValue(new Error('Service error'));
     
-        await expect(controller.addTodo(createTodoDto)).rejects.toThrow('Service error');
-        expect(todoService.addTodo).toHaveBeenCalledWith(createTodoDto);
+        await expect(controller.addTodo(createTodoInput)).rejects.toThrow('Service error');
+        expect(todoService.addTodo).toHaveBeenCalledWith(createTodoInput);
       });    
 
     it('should call TodoService.addTodo with the correct body param and return the created todo', async () => {
-      const createTodoDto : CreateTodoDto = {
+      const createTodoInput : CreateTodoInput = {
         description: "Learn NestJS",
         user: 1
       };
 
       const todo = {
         id: 1,
-        ...createTodoDto, 
+        ...createTodoInput, 
         done: false, 
         timestamp: new Date(),
       };
       jest.spyOn(todoService, 'addTodo').mockResolvedValue(todo);
 
-      const result = await controller.addTodo(createTodoDto);
+      const result = await controller.addTodo(createTodoInput);
 
-      expect(todoService.addTodo).toHaveBeenCalledWith(createTodoDto);
+      expect(todoService.addTodo).toHaveBeenCalledWith(createTodoInput);
       expect(result).toEqual(todo);
     });
   });

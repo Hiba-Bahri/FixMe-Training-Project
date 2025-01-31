@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user-dto';
-import { UpdateUserDto } from './dto/update-user-dto';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { User } from './entities/User';
@@ -18,15 +18,15 @@ export class UsersService {
         return await this.userRepository.find();
     }
 
-    async addUser(createUserDto: CreateUserDto): Promise<User> {
+    async addUser(createUserInput: CreateUserInput): Promise<User> {
 
-        const userExists = await this.userRepository.findOneBy({ email: createUserDto.email });
+        const userExists = await this.userRepository.findOneBy({ email: createUserInput.email });
 
         if (userExists) {
             throw new ConflictException('A user with this email already exists');
         }
 
-        const createdUser = this.userRepository.create(createUserDto);
+        const createdUser = this.userRepository.create(createUserInput);
 
         return await this.userRepository.save(createdUser);
     }
@@ -47,14 +47,14 @@ export class UsersService {
         return user;
     }
 
-    async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<String> {
+    async updateUser(id: number, updateUserInput: UpdateUserInput): Promise<String> {
 
         await this.findUserById(id);
 
 
-        if (updateUserDto.email) {    
+        if (updateUserInput.email) {    
             const emailExists = await this.userRepository.findOne({
-                where: { email: updateUserDto.email, id: Not(id) },
+                where: { email: updateUserInput.email, id: Not(id) },
             });     
 
             if (emailExists) {
@@ -62,7 +62,7 @@ export class UsersService {
             }
         }
 
-        await this.userRepository.update(id, updateUserDto);
+        await this.userRepository.update(id, updateUserInput);
 
         return "User updated successfully";
     }

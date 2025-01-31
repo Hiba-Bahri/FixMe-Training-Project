@@ -33,18 +33,18 @@ type Query {
 }
 
 type Mutation {
-  createUser(data: CreateUserDto!): UserType!
-  updateUser(id: Int!, data: UpdateUserDto!): String!
+  createUser(data: CreateUserInput!): UserType!
+  updateUser(id: Int!, data: UpdateUserInput!): String!
   createTodo(data: CreateTodoInput!): TodoType!
   updateTodo(id: Int!): String!
 }
 
-input CreateUserDto {
+input CreateUserInput {
   name: String!
   email: String!
 }
 
-input UpdateUserDto {
+input UpdateUserInput {
   name: String
   email: String
 }
