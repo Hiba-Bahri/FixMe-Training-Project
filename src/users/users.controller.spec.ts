@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user-dto';
-import { UpdateUserDto } from './dto/update-user-dto';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 
 describe('UsersController', () => {
@@ -76,52 +76,52 @@ describe('UsersController', () => {
 
   describe('addUser', () => {
 
-        it('should throw a BadRequestException for invalid CreateUserDto', async () => {
-          const invalidCreateUserDto = {};
+        it('should throw a BadRequestException for invalid CreateUserInput', async () => {
+          const invalidCreateUserInput = {};
           const validationPipe = new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true });
     
           await expect(
-            validationPipe.transform(invalidCreateUserDto, {
+            validationPipe.transform(invalidCreateUserInput, {
               type: 'body',
-              metatype: CreateUserDto,
+              metatype: CreateUserInput,
             }),
           ).rejects.toThrow(BadRequestException);
         });
     
-        it('should pass validation for valid CreateUserDto', async () => {
-          const validCreateUserDto : CreateUserDto = {         
+        it('should pass validation for valid CreateUserInput', async () => {
+          const validCreateUserInput : CreateUserInput = {         
             name: 'Hiba Bahri', 
             email: "hibabahri@gmail.com"
           };
     
           const validationPipe = new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true });
     
-          const result = await validationPipe.transform(validCreateUserDto, {
+          const result = await validationPipe.transform(validCreateUserInput, {
             type: 'body',
-            metatype: CreateUserDto,
+            metatype: CreateUserInput,
           });
     
-          expect(result).toEqual(validCreateUserDto);
+          expect(result).toEqual(validCreateUserInput);
         });
 
         it('should throw an exception when UsersService.addUser fails', async () => {
-          const createUserDto: CreateUserDto = { name: 'Hiba Bahri', email: "hibabahri@gmail.com" };
+          const createUserInput: CreateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com" };
 
   
           jest.spyOn(usersService, 'addUser').mockRejectedValue(new Error('Service error'));
       
-          await expect(controller.addUser(createUserDto)).rejects.toThrow('Service error');
-          expect(usersService.addUser).toHaveBeenCalledWith(createUserDto);
+          await expect(controller.addUser(createUserInput)).rejects.toThrow('Service error');
+          expect(usersService.addUser).toHaveBeenCalledWith(createUserInput);
         });  
 
     it('should call UsersService.addUser with the correct body and return the created user', async () => {
-      const createUserDto: CreateUserDto = { name: 'Hiba Bahri', email: "hibabahri@gmail.com" };
-      const mockUser = { id: 1, ...createUserDto, todos: [] };
+      const createUserInput: CreateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com" };
+      const mockUser = { id: 1, ...createUserInput, todos: [] };
       jest.spyOn(usersService, 'addUser').mockResolvedValue(mockUser);
 
-      const result = await controller.addUser(createUserDto);
+      const result = await controller.addUser(createUserInput);
 
-      expect(usersService.addUser).toHaveBeenCalledWith(createUserDto);
+      expect(usersService.addUser).toHaveBeenCalledWith(createUserInput);
       expect(result).toEqual(mockUser);
     });
   });
@@ -177,25 +177,25 @@ describe('UsersController', () => {
 
     it('should throw an exception when UsersService.updateUser fails', async () => {
 
-      const updateUserDto : UpdateUserDto = { name: "Hiba", email: "hibabahri@gmail.com" };
+      const updateUserInput : UpdateUserInput = { name: "Hiba", email: "hibabahri@gmail.com" };
       const userId = 1;
 
       jest.spyOn(usersService, 'updateUser').mockRejectedValue(new Error('Service error'));
   
-      await expect(controller.updateUser(userId, updateUserDto)).rejects.toThrow('Service error');
-      expect(usersService.updateUser).toHaveBeenCalledWith(userId, updateUserDto);
+      await expect(controller.updateUser(userId, updateUserInput)).rejects.toThrow('Service error');
+      expect(usersService.updateUser).toHaveBeenCalledWith(userId, updateUserInput);
     });
 
 
     it('should call UsersService.updateUser with the correct parameters and return the result', async () => {
-      const updateUserDto: UpdateUserDto = { name: 'Hiba Bahri', email: "hibabahri@gmail.com" };
+      const updateUserInput: UpdateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com" };
       const userId = 1;
 
       jest.spyOn(usersService, 'updateUser').mockResolvedValue("User updated successfully");
 
-      const result = await controller.updateUser(userId, updateUserDto);
+      const result = await controller.updateUser(userId, updateUserInput);
 
-      expect(usersService.updateUser).toHaveBeenCalledWith(userId, updateUserDto);
+      expect(usersService.updateUser).toHaveBeenCalledWith(userId, updateUserInput);
       expect(result).toEqual("User updated successfully");
     });
   });

@@ -1,5 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { TodoType } from 'src/todo/graphql/todo.type';
+import { TodoType } from '../../todo/graphql/todo.type';
 
 @ObjectType()
 export class UserType {
