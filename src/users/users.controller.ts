@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { debug } from 'console';
+import { NonEmptyUpdatePipe } from './pipes/non-empty-update.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -30,7 +31,7 @@ export class UsersController {
     }
 
     @Patch(':id')
-    updateUser(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateUserInput: UpdateUserInput) {
+    updateUser(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe, new NonEmptyUpdatePipe()) updateUserInput: UpdateUserInput) {
         return this.userService.updateUser(id, updateUserInput);
     }
 

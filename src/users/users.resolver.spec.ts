@@ -5,6 +5,8 @@ import { CreateUserInput } from './dto/create-user.input';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UpdateUserInput } from './dto/update-user.input';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { NonEmptyUpdatePipe } from './pipes/non-empty-update.pipe';
 
 describe('UsersResolver', () => {
   let resolver: UsersResolver;
@@ -160,6 +162,26 @@ describe('UsersResolver', () => {
   // Update user functionality testing 
 
   describe('updateUser', () => {
+
+    it('should throw BadRequestException if updateUserInput is empty', () => {
+      const pipe = new NonEmptyUpdatePipe();
+      const invalidUpdateUserInput = {};
+  
+      expect(() => pipe.transform(invalidUpdateUserInput, { type: 'body', metatype: UpdateUserInput }))
+        .toThrow(new BadRequestException('At least one field must be updated'));
+    });
+  
+    it('should throw a BadRequestException for invalid UpdateUserInput', async () => {
+      const invalidUpdateUserInput = { email: 'invalid-email' };
+      const validationPipe = new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true });
+  
+      await expect(
+        validationPipe.transform(invalidUpdateUserInput, {
+          type: 'body',
+          metatype: UpdateUserInput,
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
   
     it('should throw an exception when UsersService.updateUser fails', async () => {
 
