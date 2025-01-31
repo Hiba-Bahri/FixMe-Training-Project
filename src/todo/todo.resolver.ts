@@ -1,7 +1,7 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TodoType } from './graphql/todo.type';
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo-dto';
+import { CreateTodoInput } from './dto/create-todo.input';
 
 @Resolver(() => TodoType)
 export class TodoResolver {
@@ -19,9 +19,9 @@ export class TodoResolver {
     }
 
     @Mutation(() => TodoType)
-    async createTodo(@Args('data') createTodoDTO: CreateTodoDto,
-    ): Promise<TodoType> {
-        return this.todoService.addTodo(createTodoDTO);
+    async createTodo(@Args('data') createTodoInput: CreateTodoInput,
+    ): Promise<TodoType>{
+        return this.todoService.addTodo(createTodoInput);
     }
 
     @Mutation(() => String)

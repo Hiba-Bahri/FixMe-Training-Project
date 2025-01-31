@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodoController } from './todo.controller';
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo-dto';
+import { CreateTodoDto } from './dto/create-todo.input.ts';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 
 describe('TodoController', () => {
