@@ -28,7 +28,12 @@ export class UsersService {
 
         const createdUser = this.userRepository.create(createUserInput);
 
-        return await this.userRepository.save(createdUser);
+        const savedUser = await this.userRepository.save(createdUser);
+
+        console.log(savedUser);
+
+
+        return savedUser;
     }
 
     async findUserById(id: number): Promise<User> | null {

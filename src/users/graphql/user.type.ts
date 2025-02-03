@@ -11,6 +11,9 @@ export class UserType {
 
   @Field()
   email: string;
+
+  @Field()
+  password: string;
   
   @Field(() => [TodoType], { nullable: true })
   todos: TodoType[];
