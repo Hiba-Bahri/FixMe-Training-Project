@@ -18,4 +18,8 @@ export class CreateUserInput{
     @IsNotEmpty()
     @IsString()
     password: string;
+
+    @Field({ nullable: true })
+    @IsString()
+    role: 'admin' | 'user' = 'user'; 
 }

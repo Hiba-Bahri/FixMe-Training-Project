@@ -20,6 +20,7 @@ type UserType {
   name: String!
   email: String!
   password: String!
+  role: String!
   todos: [TodoType!]
 }
 
@@ -32,7 +33,7 @@ type Query {
   users: [UserType!]!
   userById(id: Int!): UserType!
   userByEmail(email: String!): UserType!
-  deleteUser(id: Int!): String!
+  deleteUser: String!
   todos: [TodoType!]!
   todoById(id: Int!): TodoType!
   deleteTodo(id: Int!): String!
@@ -40,7 +41,7 @@ type Query {
 
 type Mutation {
   createUser(data: CreateUserInput!): UserType!
-  updateUser(id: Int!, data: UpdateUserInput!): String!
+  updateUser(data: UpdateUserInput!): String!
   createTodo(data: CreateTodoInput!): TodoType!
   updateTodo(id: Int!): String!
   login(email: String!, password: String!): AuthResponse!
@@ -51,12 +52,14 @@ input CreateUserInput {
   name: String!
   email: String!
   password: String!
+  role: String = "user"
 }
 
 input UpdateUserInput {
   name: String
   email: String
   password: String
+  role: String = "user"
 }
 
 input CreateTodoInput {

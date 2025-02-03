@@ -1,11 +1,13 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserType } from './graphql/user.type';
 import { UpdateUserInput } from './dto/update-user.input';
 import { NonEmptyUpdatePipe } from './pipes/non-empty-update.pipe';
-import { UseGuards } from '@nestjs/common';
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 
 @Resolver(() => UserType)
@@ -13,19 +15,22 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [UserType])
-  @UseGuards(GqlAuthGuard)
+  @Roles('admin')
+  @UseGuards(GqlAuthGuard, RolesGuard)
   async users() {
     return this.usersService.getUsers();
   }
 
   @Query(() => UserType)
-  @UseGuards(GqlAuthGuard)
+  @Roles('admin')
+  @UseGuards(GqlAuthGuard, RolesGuard)
   async userById(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.findUserById(id);
   }
 
   @Query(() => UserType)
-  @UseGuards(GqlAuthGuard)
+  @Roles('admin')
+  @UseGuards(GqlAuthGuard, RolesGuard)
   async userByEmail(@Args('email', { type: () => String }) email: string) {
     return this.usersService.findUserByEmail(email);
   }
@@ -38,18 +43,32 @@ export class UsersResolver {
   }
 
   @Mutation(() => String)
-  @UseGuards(GqlAuthGuard)
+  @Roles('user')
+  @UseGuards(GqlAuthGuard, RolesGuard)
   async updateUser(
-    @Args('id', {type: () => Int}) id: number,
+   @Context() context,
     @Args('data', new NonEmptyUpdatePipe()) updateUserInput: UpdateUserInput,
   ): Promise<String> {
-    return this.usersService.updateUser(id, updateUserInput);
+    const user = context.req.user;
+
+          if (!user) {
+            throw new UnauthorizedException("User not found in request!");
+          }
+
+    return this.usersService.updateUser(user.id, updateUserInput);
   }
 
   @Query(() => String)
-  @UseGuards(GqlAuthGuard)
-  async deleteUser(@Args ('id', {type: () => Int}) id: number) {
-    return this.usersService.deleteUser(id);
+  @Roles('user')
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  async deleteUser(@Context() context) {
+    const user = context.req.user;
+
+    if (!user) {
+      throw new UnauthorizedException("User not found in request!");
+    }
+
+    return this.usersService.deleteUser(user.id);
   }
 
 }

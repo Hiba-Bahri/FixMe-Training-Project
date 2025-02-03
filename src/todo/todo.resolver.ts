@@ -4,6 +4,8 @@ import { TodoService } from './todo.service';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Resolver(() => TodoType)
 export class TodoResolver {
@@ -11,7 +13,8 @@ export class TodoResolver {
     constructor(private readonly todoService: TodoService) {}
 
     @Query(() => [TodoType])
-    @UseGuards(GqlAuthGuard)
+    @Roles('user')
+    @UseGuards(GqlAuthGuard, RolesGuard)
     async todos(@Context() context) {
       const user = context.req.user;
       
@@ -24,27 +27,31 @@ export class TodoResolver {
     
 
     @Query(() => TodoType)
-    @UseGuards(GqlAuthGuard)
+    @Roles('user')
+    @UseGuards(GqlAuthGuard, RolesGuard)
     async todoById(@Args('id', { type: () => Int }) id: number) {
         return this.todoService.findTodoById(id);
     }
 
     @Mutation(() => TodoType)
-    @UseGuards(GqlAuthGuard)
+    @Roles('user')
+    @UseGuards(GqlAuthGuard, RolesGuard)
     async createTodo(@Args('data') createTodoInput: CreateTodoInput,
     ): Promise<TodoType>{
         return this.todoService.addTodo(createTodoInput);
     }
 
     @Mutation(() => String)
-    @UseGuards(GqlAuthGuard)
+     @Roles('user')
+    @UseGuards(GqlAuthGuard, RolesGuard)
     async updateTodo(@Args('id', {type: () => Int}) id: number,
     ): Promise<String> {
         return this.todoService.checkTodo(id);
     }
 
     @Query(() => String)
-    @UseGuards(GqlAuthGuard)
+    @Roles('user')
+    @UseGuards(GqlAuthGuard, RolesGuard)
     async deleteTodo(@Args ('id', {type: () => Int}) id: number) {
         return this.todoService.deleteTodo(id);
     }

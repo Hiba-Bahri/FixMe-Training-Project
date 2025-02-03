@@ -35,8 +35,8 @@ import { Todo } from './todo/entities/Todo';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [User, Todo],
-        // autoLoadEntities: true,
-        // synchronize: true
+        autoLoadEntities: true,
+        //synchronize: true
       }),
       inject: [ConfigService],
     }),

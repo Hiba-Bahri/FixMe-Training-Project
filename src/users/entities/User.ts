@@ -16,6 +16,9 @@ export class User {
     @Column({type: 'varchar', length: 255})
     password: string;
 
+    @Column({type: 'varchar', length: 10})
+    role: string;
+
     @OneToMany(() => Todo, todo => todo.user)
     todos: Todo[];
 }
