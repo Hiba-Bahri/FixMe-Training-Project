@@ -75,6 +75,7 @@ describe('UsersService', () => {
       const createUserDto = {
         name: 'Hiba',
         email: 'hibabahri@gmail.com',
+        password: "random password"
       };
       const userExists = {
         id: 1,
@@ -96,6 +97,7 @@ describe('UsersService', () => {
       const createUserDto = {
         name: 'Hiba',
         email: 'hibabahri@gmail.com',
+        password: "random password"
       };
       const createdUser = {
         id: 1,
