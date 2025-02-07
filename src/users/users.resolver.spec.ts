@@ -57,6 +57,7 @@ describe('UsersResolver', () => {
           name: "Hiba",
           email: "hibabahri@gmail.com",
           password: "random password",
+          role: "user",
           todos: []
         },
         {
@@ -64,6 +65,7 @@ describe('UsersResolver', () => {
           name: "Hiba",
           email: "hibabahri123@gmail.com",
           password: "random password",
+          role: "user",
           todos: []
         }
       ];
@@ -91,7 +93,7 @@ describe('UsersResolver', () => {
     });      
     
     it('should throw an exception when UsersService.addUser fails', async () => {
-      const createUserInput: CreateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com", password: "random password" };
+      const createUserInput: CreateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com", password: "random password", role: "user", };
 
 
       jest.spyOn(usersService, 'addUser').mockRejectedValue(new Error('Service error'));
@@ -101,7 +103,7 @@ describe('UsersResolver', () => {
     });
   
     it('should call UsersService.addUser with the correct body and return the created user', async () => {
-      const createUserInput: CreateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com", password: "random password" };
+      const createUserInput: CreateUserInput = { name: 'Hiba Bahri', email: "hibabahri@gmail.com", password: "random password", role: "user", };
       const mockUser = { id: 1, ...createUserInput, todos: [] };
       jest.spyOn(usersService, 'addUser').mockResolvedValue(mockUser);
 
@@ -126,7 +128,7 @@ describe('UsersResolver', () => {
     });
 
     it('should call UsersService.findUserById with the user id and return the matching user', async () => {
-      const mockUser = { id: 1, name: 'Hiba Bahri', email: "hibabahri@gmail.com", todos: [], password: "random password" };
+      const mockUser = { id: 1, name: 'Hiba Bahri', email: "hibabahri@gmail.com", todos: [], password: "random password", role: "user", };
       jest.spyOn(usersService, 'findUserById').mockResolvedValue(mockUser);
 
       const result = await resolver.userById(1);
@@ -148,7 +150,7 @@ describe('UsersResolver', () => {
 
     it('should call UsersService.findUserByEmail with the user id and return the matching user', async () => {
 
-      const mockUser = { id: 1, name: 'Hiba Bahri', email: "hibabahri@gmail.com", todos: [], password: "random password" };
+      const mockUser = { id: 1, name: 'Hiba Bahri', email: "hibabahri@gmail.com", todos: [], password: "random password", role: "user", };
       const useremail = "hibabahri@gmail.com"
 
       jest.spyOn(usersService, 'findUserByEmail').mockResolvedValue(mockUser);

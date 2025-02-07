@@ -9,9 +9,6 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req;
-    if (!req.headers.authorization) {
-      console.log("No Authorization header found!");
-    }
 
     return req;
   }
