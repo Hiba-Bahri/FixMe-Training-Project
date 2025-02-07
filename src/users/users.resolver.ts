@@ -8,6 +8,8 @@ import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { CurrentUser } from 'src/auth/decorators/get-current-user.decorator';
+import { User } from './entities/User';
 
 
 @Resolver(() => UserType)
@@ -46,10 +48,9 @@ export class UsersResolver {
   @Roles('user')
   @UseGuards(GqlAuthGuard, RolesGuard)
   async updateUser(
-   @Context() context,
+    @CurrentUser() user: User,
     @Args('data', new NonEmptyUpdatePipe()) updateUserInput: UpdateUserInput,
   ): Promise<String> {
-    const user = context.req.user;
 
           if (!user) {
             throw new UnauthorizedException("User not found in request!");
@@ -61,8 +62,7 @@ export class UsersResolver {
   @Query(() => String)
   @Roles('user')
   @UseGuards(GqlAuthGuard, RolesGuard)
-  async deleteUser(@Context() context) {
-    const user = context.req.user;
+  async deleteUser(@CurrentUser() user: User) {
 
     if (!user) {
       throw new UnauthorizedException("User not found in request!");
