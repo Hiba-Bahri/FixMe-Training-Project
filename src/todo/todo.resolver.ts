@@ -57,4 +57,16 @@ export class TodoResolver {
         return this.todoService.deleteTodo(id);
     }
 
+    @Query(() => String)
+    @Roles('user')
+    @UseGuards(GqlAuthGuard, RolesGuard)
+    async deleteAllTodos(@CurrentUser() user: User) {
+        
+        if (!user) {
+            throw new UnauthorizedException("User not found in request!");
+          }
+
+        return this.todoService.deleteAllTodos(user.id);
+    }
+
 }

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { User } from './entities/User';
 import { debug } from 'console';
+import { TodoService } from 'src/todo/todo.service';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +13,7 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        private readonly todoService: TodoService
     ) {}
 
     async getUsers():Promise<User[]> {
@@ -77,6 +79,8 @@ export class UsersService {
         await this.findUserById(id);
 
         await this.userRepository.delete(id);
+
+        await this.todoService.deleteAllTodos(id);
 
         return "User deleted successfully";
     }

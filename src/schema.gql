@@ -37,6 +37,7 @@ type Query {
   todos: [TodoType!]!
   todoById(id: Int!): TodoType!
   deleteTodo(id: Int!): String!
+  deleteAllTodos: String!
 }
 
 type Mutation {

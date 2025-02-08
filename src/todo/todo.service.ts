@@ -52,4 +52,13 @@ export class TodoService {
         return 'Todo task deleted';
     }
 
+    async deleteAllTodos(userId: number): Promise<string>{
+            
+            const todos = await this.todoRepository.findBy({user: userId});
+
+            await this.todoRepository.remove(todos);
+    
+            return 'All todo tasks deleted';
+        }
+
 }
