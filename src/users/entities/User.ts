@@ -19,6 +19,9 @@ export class User {
     @Column({type: 'varchar', length: 10})
     role: string;
 
+    @Column({ nullable: true })
+    refreshToken?: string;
+
     @OneToMany(() => Todo, todo => todo.user)
     todos: Todo[];
 }

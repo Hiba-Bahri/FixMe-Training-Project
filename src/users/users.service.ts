@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { User } from './entities/User';
 import { debug } from 'console';
+import * as bcrypt from 'bcrypt';
 import { TodoService } from 'src/todo/todo.service';
 
 @Injectable()
@@ -83,6 +84,29 @@ export class UsersService {
         await this.todoService.deleteAllTodos(id);
 
         return "User deleted successfully";
+    }
+
+
+        // 🔹 Save the refresh token (hashed)
+    async updateRefreshToken(userId: number, refreshToken: string) {
+        const hashedToken = await bcrypt.hash(refreshToken, 10);
+        console.log("-------test----------------",hashedToken);
+
+        await this.userRepository.update(userId, { refreshToken: hashedToken });
+    }
+
+    // 🔹 Validate if the provided refresh token matches the stored one
+    async getUserIfRefreshTokenMatches(userId: number, refreshToken: string) {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user || !user.refreshToken) return null;
+
+        const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+        return isMatch ? user : null;
+    }
+
+    // 🔹 Remove the refresh token on logout
+    async removeRefreshToken(userId: number) {
+        await this.userRepository.update(userId, { refreshToken: null });
     }
 
 }
