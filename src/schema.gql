@@ -26,7 +26,7 @@ type UserType {
 
 type AuthResponse {
   user: UserType!
-  access_token: String!
+  accessToken: String!
 }
 
 type Query {
@@ -46,6 +46,8 @@ type Mutation {
   createTodo(data: CreateTodoInput!): TodoType!
   updateTodo(id: Int!): String!
   login(email: String!, password: String!): AuthResponse!
+  refreshToken: AuthResponse!
+  logout: Boolean!
   signup(data: CreateUserInput!): AuthResponse!
 }
 

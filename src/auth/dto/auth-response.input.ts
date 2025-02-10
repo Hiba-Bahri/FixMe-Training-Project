@@ -7,5 +7,5 @@ export class AuthResponse {
   user: UserType;
 
   @Field(() => String)
-  access_token: string;
+  accessToken: string;
 }
