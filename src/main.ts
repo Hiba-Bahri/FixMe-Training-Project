@@ -8,12 +8,16 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  });  
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({
     transform: true, // Automatically transform payloads to the type defined in DTOs
     whitelist: true, // Strips properties that do not have decorators
     forbidNonWhitelisted: true, // Reject requests with properties not in DTOs
   }));
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(/*process.env.PORT ?? */5000);
 }
 bootstrap();
